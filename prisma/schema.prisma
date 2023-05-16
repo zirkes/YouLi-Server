@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 连接自己的数据库
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:123456@localhost:3306/shop_mall" //[连接的数据库类型]://[用户]:[密码]@[地址]:[端口]/[数据库名称]
+}
+
+model address {
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  fullname    String  @db.VarChar(255)
+  phone       String  @db.VarChar(255)
+  address     String  @db.VarChar(255)
+  det_address String  @db.VarChar(255)
+  remarks     String? @db.VarChar(255)
+}
+
+model admin {
+  id            Int       @id @default(autoincrement())
+  adminName     String    @map("admin_name") @db.VarChar(255)
+  password      String    @db.VarChar(255)
+  role          Int
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @updatedAt
+  last_login_at DateTime? @db.DateTime(0)
+}
+
+model brand {
+  id    Int     @id @default(autoincrement())
+  brand String  @db.VarChar(100)
+  icon  String? @db.VarChar(100)
+}
+
+model cate_brand {
+  id       Int @id @default(autoincrement())
+  cate_id  Int
+  brand_id Int
+}
+
+model category {
+  cateId     Int       @id @default(autoincrement()) @map("cate_id")
+  category   String    @db.VarChar(255)
+  cateRank   Int       @map("cate_rank")
+  parentId   Int       @map("parent_id")
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @updatedAt() @db.DateTime(0)
+}
+
+model collection {
+  id      Int @id @default(autoincrement())
+  user_id Int
+  pro_id  Int
+}
+
+model order {
+  id           Int       @id @default(autoincrement())
+  addressId    Int       @map("address_id")
+  orderNumber  String    @map("order_number") @db.VarChar(255)
+  amount       String    @db.VarChar(255)
+  userId       Int       @map("user_id")
+  status       Int
+  shopsRemarks String?   @map("shops_remarks") @db.VarChar(255)
+  createdAt    DateTime  @map("created_at") @db.DateTime(0)
+  finishTime   DateTime? @map("finish_time") @db.DateTime(0)
+  updatedAt    DateTime? @updatedAt() @map("updated_at") @db.DateTime(0)
+}
+
+model product {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  brandId    Int       @map("brand_id")
+  cateId     Int       @map("cate_id")
+  exhibit    Int?
+  image      String    @db.VarChar(500)
+  subimages  String?   @db.Text
+  detail     String?   @db.VarChar(255)
+  price      Decimal   @db.Decimal(20, 2)
+  stock      Int
+  status     Int
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+model shopcart {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  pro_id     Int
+  number     Int
+  memory     String    @db.VarChar(255)
+  total      Int
+  repair     Int?
+  choice     Int?      @db.TinyInt
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shops {
+  id             Int       @id @default(autoincrement())
+  name           String    @db.VarChar(255)
+  shops_nature   Int?
+  shops_grade    Int?
+  phone          String    @db.VarChar(255)
+  email          String    @db.VarChar(255)
+  shops_img      String    @db.VarChar(255)
+  shops_name     String    @db.VarChar(255)
+  shops_password String    @db.VarChar(255)
+  power          Int
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+}
+
+model shops_goods {
+  id         Int       @id @default(autoincrement())
+  pro_id     Int
+  shops_id   Int
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+model spec {
+  id      Int    @id @default(autoincrement())
+  cate_id Int
+  type    String @db.VarChar(255)
+}
+
+model spec_order {
+  id           Int     @id @default(autoincrement())
+  user_id      Int
+  pro_id       Int
+  order_number String  @db.VarChar(255)
+  memory       String  @db.VarChar(255)
+  count        Int?
+  total        String? @db.VarChar(255)
+}
+
+model spec_params {
+  id         Int    @id @default(autoincrement())
+  spec_id    Int
+  pro_id     Int
+  spec_value String @db.VarChar(255)
+}
+
+model user {
+  userid        Int       @id @default(autoincrement())
+  username      String    @db.VarChar(50)
+  name          String?   @db.VarChar(255)
+  password      String    @db.VarChar(50)
+  image         String?   @db.Text
+  phone         String    @db.VarChar(20)
+  email         String?   @db.VarChar(255)
+  created_at    DateTime  @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  last_login_at DateTime? @db.DateTime(0)
+}
